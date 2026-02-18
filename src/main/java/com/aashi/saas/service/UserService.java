@@ -14,6 +14,7 @@ import com.aashi.saas.repository.UserRepository;
 public class UserService {
 	@Autowired
    private UserRepository userRepository;
+	@Autowired
    private TenantRepository tenantRepository;
 	
 public User createUser(User user)
@@ -38,5 +39,10 @@ public List<User> getAllusers()
 public void deleteUser(Long id)
 {
 	userRepository.deleteById(id);
+}
+public List<User> getUserByTenant(Long tenantId)
+{
+	List<User> users = userRepository.findByTenantId(tenantId);
+	return users;
 }
 }
