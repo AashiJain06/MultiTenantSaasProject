@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.aashi.saas.dto.UserDto;
 import com.aashi.saas.entity.User;
 import com.aashi.saas.service.UserService;
 
@@ -23,7 +24,7 @@ public class UserController {
 	private UserService userService;
 	
 	@PostMapping
-	public User createUser(@RequestBody User user)
+	public UserDto createUser(@RequestBody User user)
 	{
 	 return userService.createUser(user);
 	}
@@ -34,7 +35,7 @@ public class UserController {
    }
    
    @GetMapping("/{id}")
-   public User getUserById(@PathVariable Long id)
+   public UserDto getUserById(@PathVariable Long id)
    {
 	   return userService.getUserById(id);
    }
@@ -44,8 +45,8 @@ public class UserController {
        return "User deleted successfully";
    }
    @GetMapping("/tenant")
-   public List<User> getUserByTenant(@RequestHeader("X-Tenant-Id") Long tenantId)
+   public List<UserDto> getUserByTenant()
    {
-	   return userService.getUserByTenant(tenantId);
+	   return userService.getUserByTenant();
    }
 }

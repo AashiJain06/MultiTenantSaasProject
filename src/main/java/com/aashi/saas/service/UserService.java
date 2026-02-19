@@ -5,6 +5,8 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.aashi.saas.context.TenantContext;
+import com.aashi.saas.dto.UserDto;
 import com.aashi.saas.entity.Tenant;
 import com.aashi.saas.entity.User;
 import com.aashi.saas.repository.TenantRepository;
@@ -17,7 +19,7 @@ public class UserService {
 	@Autowired
    private TenantRepository tenantRepository;
 	
-public User createUser(User user)
+public UserDto createUser(User user)
 {
 	Long tenantId = user.getTenant().getId();
 
@@ -26,11 +28,13 @@ public User createUser(User user)
 
     user.setTenant(tenant);
 
-    return userRepository.save(user);
+    User savedUser =  userRepository.save(user);
+    return new UserDto(savedUser.getId(), savedUser.getUsername(),savedUser.getEmail(),savedUser.getRole());
 }
-public User getUserById(Long id)
+public UserDto getUserById(Long id)
 {
-	return userRepository.findById(id).orElseThrow(()->new RuntimeException("User not found"));
+	User user = userRepository.findById(id).orElseThrow(()->new RuntimeException("User not found"));
+    return new UserDto(user.getId(), user.getUsername(), user.getEmail(), user.getRole());
 }
 public List<User> getAllusers()
 {
@@ -40,9 +44,10 @@ public void deleteUser(Long id)
 {
 	userRepository.deleteById(id);
 }
-public List<User> getUserByTenant(Long tenantId)
+public List<UserDto> getUserByTenant()
 {
+	Long tenantId = TenantContext.getTenantId();
 	List<User> users = userRepository.findByTenantId(tenantId);
-	return users;
+	return users.stream().map(user ->new UserDto(user.getId(),user.getUsername(),user.getEmail(),user.getRole())).toList();
 }
 }
