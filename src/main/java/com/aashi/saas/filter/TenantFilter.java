@@ -2,9 +2,11 @@ package com.aashi.saas.filter;
 
 import java.io.IOException;
 
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 
 import com.aashi.saas.context.TenantContext;
+import com.aashi.saas.security.CustomUserDetails;
 
 import jakarta.servlet.Filter;
 import jakarta.servlet.FilterChain;
@@ -22,11 +24,11 @@ public class TenantFilter implements Filter{
 		HttpServletRequest httpRequest = (HttpServletRequest)request;
 		try
 		{
-		String tenantHeader = httpRequest.getHeader("X-Tenant-Id");
-		if(tenantHeader!=null)
-			TenantContext.setTenantId(Long.parseLong(tenantHeader));
-		
-		chain.doFilter(request, response);
+		   var auth = SecurityContextHolder.getContext().getAuthentication();
+		   if(auth!=null && auth.getPrincipal() instanceof CustomUserDetails user)
+			  TenantContext.setTenantId(user.getTenantId()); 
+		   
+		   chain.doFilter(request, response);
 	}
 	finally
 	{

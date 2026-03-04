@@ -3,6 +3,7 @@ package com.aashi.saas.service;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import com.aashi.saas.context.TenantContext;
@@ -12,12 +13,18 @@ import com.aashi.saas.entity.User;
 import com.aashi.saas.repository.TenantRepository;
 import com.aashi.saas.repository.UserRepository;
 
+import lombok.AllArgsConstructor;
+import lombok.RequiredArgsConstructor;
+
 @Service
+@AllArgsConstructor
 public class UserService {
-	@Autowired
+
    private UserRepository userRepository;
-	@Autowired
+
    private TenantRepository tenantRepository;
+  
+   private PasswordEncoder passwordEncoder;
 	
 public UserDto createUser(User user)
 {
@@ -27,7 +34,7 @@ public UserDto createUser(User user)
             .orElseThrow(() -> new RuntimeException("Tenant not found"));
 
     user.setTenant(tenant);
-
+    user.setPassword(passwordEncoder.encode(user.getPassword()));
     User savedUser =  userRepository.save(user);
     return new UserDto(savedUser.getId(), savedUser.getUsername(),savedUser.getEmail(),savedUser.getRole());
 }
