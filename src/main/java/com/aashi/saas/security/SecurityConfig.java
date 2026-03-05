@@ -44,11 +44,11 @@ public class SecurityConfig {
     {
     	return new BCryptPasswordEncoder();
     }
-    @Bean
-	public AuthenticationManager athenticationManager(PasswordEncoder passwordEncoder)
-	{
-		DaoAuthenticationProvider daoAuthenticationProvider = new DaoAuthenticationProvider(customUserService);
-		daoAuthenticationProvider.setPasswordEncoder(passwordEncoder);
-		return new ProviderManager(daoAuthenticationProvider);	
-	}
+//    @Bean
+//	public AuthenticationManager athenticationManager(PasswordEncoder passwordEncoder)
+//	{
+//		DaoAuthenticationProvider daoAuthenticationProvider = new DaoAuthenticationProvider(customUserService);
+//		daoAuthenticationProvider.setPasswordEncoder(passwordEncoder);
+//		return new ProviderManager(daoAuthenticationProvider);	
+//	}
 }
