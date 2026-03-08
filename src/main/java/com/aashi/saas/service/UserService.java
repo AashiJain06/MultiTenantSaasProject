@@ -57,7 +57,7 @@ public void deleteUser(Long id)
 public List<UserResponseDto> getUserByTenant()
 {
 	Long tenantId = TenantContext.getTenantId();
-	List<User> users = userRepository.findByTenantId(tenantId);
+	List<User> users = userRepository.findAll();
 	return users.stream().map(user ->new UserResponseDto(user.getId(),user.getUsername(),user.getEmail(),user.getRole())).toList();
 }
 }

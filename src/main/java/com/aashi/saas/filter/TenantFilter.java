@@ -2,32 +2,49 @@ package com.aashi.saas.filter;
 
 import java.io.IOException;
 
+import org.hibernate.Session;
+import org.hibernate.annotations.Filter;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
+import org.springframework.web.filter.OncePerRequestFilter;
 
 import com.aashi.saas.context.TenantContext;
 import com.aashi.saas.security.CustomUserDetails;
 
-import jakarta.servlet.Filter;
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.PersistenceContext;
+
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
-import jakarta.servlet.ServletRequest;
-import jakarta.servlet.ServletResponse;
+
 import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
+import lombok.AllArgsConstructor;
 
 @Component
-public class TenantFilter implements Filter{
+@AllArgsConstructor
+public class TenantFilter extends OncePerRequestFilter{
+	
+	@PersistenceContext
+	private EntityManager entityManager;
 
 	@Override
-	public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain)
+	public void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain chain)
 			throws IOException, ServletException {
 		HttpServletRequest httpRequest = (HttpServletRequest)request;
 		try
 		{
 		   var auth = SecurityContextHolder.getContext().getAuthentication();
 		   if(auth!=null && auth.getPrincipal() instanceof CustomUserDetails user)
+		   {
 			  TenantContext.setTenantId(user.getTenantId()); 
-		   
+			  
+		      Session session = entityManager.unwrap(Session.class);
+		      
+		     Filter filter = (Filter) session.enableFilter("tenantFilter");
+		      
+		      ((org.hibernate.Filter) filter).setParameter("tenantId",TenantContext.getTenantId());
+		   }
 		   chain.doFilter(request, response);
 	}
 	finally
