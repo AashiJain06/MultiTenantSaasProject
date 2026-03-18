@@ -21,7 +21,7 @@ import jakarta.persistence.Table;
 		)
 @Filter(
 	name="tenantFilter",
-	condition = "tenant_id= : tenantId"
+	condition = "tenant_id= :tenantId"
 		)
 @Table(name="users")
 public class User {
@@ -38,7 +38,7 @@ public class User {
 	@Column(nullable=false)
 	private String role;
 	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name="tenant_id",nullable=false)
+	@JoinColumn(name="tenant_id",insertable = false, updatable = false,nullable=false)
 	private Tenant tenant;
 	public long getId() {
 		return id;

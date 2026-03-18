@@ -7,6 +7,7 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
 import com.aashi.saas.entity.User;
+import com.aashi.saas.exception.UserNotFoundException;
 import com.aashi.saas.repository.UserRepository;
 
 import lombok.RequiredArgsConstructor;
@@ -21,12 +22,8 @@ public class CustomUserDetailsService implements UserDetailsService{
 	public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
 		System.out.println("Loading user: " + username);
 		
-		User user = userRepository.findByUsername(username).orElse(null);
-		if (user == null) {
-		    System.out.println("❌ USER NOT FOUND IN DATABASE");
-		    throw new UsernameNotFoundException("User not found");
-		}
-		System.out.println("DB password: " + user.getPassword());
+		User user = userRepository.findByUsername(username).orElseThrow(()-> new UserNotFoundException("user not found with"));
+		
 		return new CustomUserDetails(user);
 	}
     
