@@ -23,14 +23,21 @@ public class GlobalExceptionHandler {
 	}
 	
 	 @ExceptionHandler(Exception.class)
-	    public ResponseEntity<ErrorResponse> handleGlobalException(Exception ex) {
+	    public ResponseEntity<String> handleGlobalException(Exception ex) {
 
-	       ErrorResponse error = new ErrorResponse(
-	                HttpStatus.INTERNAL_SERVER_ERROR.value(),
-	                "Something went wrong"
-	        );
-
-	        return new ResponseEntity<>(error, HttpStatus.INTERNAL_SERVER_ERROR);
+		 ex.printStackTrace();
+		
+		 	     return ResponseEntity.status(500)
+		 	             .body("Error: " + ex.getMessage());
 	    }
+//	 @ExceptionHandler(Exception.class)
+//	 public ResponseEntity<?> handle(Exception ex) {
+//
+//	     ex.printStackTrace(); // 🔥 IMPORTANT
+//
+//	     return ResponseEntity.status(500)
+//	             .body("Error: " + ex.getMessage());
+//	 }
+
 
 }

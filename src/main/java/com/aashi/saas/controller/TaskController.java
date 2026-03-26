@@ -11,11 +11,13 @@ import org.springframework.web.bind.annotation.RestController;
 import com.aashi.saas.entity.Task;
 import com.aashi.saas.service.TaskService;
 
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import lombok.RequiredArgsConstructor;
 
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/tasks")
+@SecurityRequirement(name="bearerAuth")
 public class TaskController {
 	
 	private final TaskService taskService;

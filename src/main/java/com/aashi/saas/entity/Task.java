@@ -2,6 +2,8 @@ package com.aashi.saas.entity;
 
 import org.hibernate.annotations.Filter;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -28,6 +30,7 @@ public class Task {
 	private Project project;
 	
 	@ManyToOne
+	@JsonIgnore
 	@JoinColumn(name = "assigned_user_id")
 	private User assigned_user;
 	

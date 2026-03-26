@@ -11,11 +11,13 @@ import org.springframework.web.bind.annotation.RestController;
 import com.aashi.saas.entity.Project;
 import com.aashi.saas.service.ProjectService;
 
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import lombok.RequiredArgsConstructor;
 
 @RestController
 @RequestMapping("/api/projects")
 @RequiredArgsConstructor
+@SecurityRequirement(name="bearerAuth")
 public class ProjectController {
 	
 	private final ProjectService projectService;

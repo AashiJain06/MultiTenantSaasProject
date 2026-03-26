@@ -18,8 +18,11 @@ import com.aashi.saas.dto.UserResponseDto;
 import com.aashi.saas.entity.User;
 import com.aashi.saas.service.UserService;
 
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
+
 @RestController
 @RequestMapping("/api/users")
+@SecurityRequirement(name="bearerAuth")
 public class UserController {
 	
 	@Autowired

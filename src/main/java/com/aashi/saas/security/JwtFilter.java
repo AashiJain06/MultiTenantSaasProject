@@ -23,6 +23,16 @@ public class JwtFilter extends OncePerRequestFilter{
 	@Override
 	protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
 			throws ServletException, IOException {
+		String path = request.getRequestURI();
+
+		if (path.contains("/api/auth") ||
+		    path.contains("/swagger-ui") ||
+		    path.contains("/v3/api-docs")) {
+
+		    System.out.println("Skipping JWT filter for: " + path);
+		    filterChain.doFilter(request, response);
+		    return;
+		}
 		System.out.println("Jwt Filter called");
 		Enumeration<String> headers = request.getHeaderNames();
 		while(headers.hasMoreElements()) {
@@ -30,7 +40,7 @@ public class JwtFilter extends OncePerRequestFilter{
 		    System.out.println(name + " = " + request.getHeader(name));
 		}
 		String header = request.getHeader("Authorization");
-		System.out.println(header);
+		System.out.println("Header: "+header);
 		if(header!=null && header.startsWith("Bearer "))
 		{
 			String token = header.substring(7);
