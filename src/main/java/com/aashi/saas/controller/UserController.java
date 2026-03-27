@@ -51,10 +51,10 @@ public class UserController {
        return "User deleted successfully";
    }
    
-   @PreAuthorize("hasRole('ADMIN')")
-   @GetMapping("/tenant")
-   public List<UserResponseDto> getUserByTenant()
-   {
-	   return userService.getUserByTenant();
-   }
+//   @PreAuthorize("hasRole('ADMIN')")
+//   @GetMapping("/tenant")
+//   public List<UserResponseDto> getUserByTenant()
+//   {
+//	   return userService.getUserByTenant();
+//   }
 }

@@ -25,8 +25,8 @@ import lombok.AllArgsConstructor;
 
 public class TenantFilter extends OncePerRequestFilter{
 	
-    @PersistenceContext
-	private EntityManager entityManager;
+//    @PersistenceContext
+//	private EntityManager entityManager;
 
 	@Override
 	public void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain chain)

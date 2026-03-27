@@ -15,13 +15,15 @@ import com.aashi.saas.entity.Tenant;
 import com.aashi.saas.entity.User;
 import com.aashi.saas.repository.TenantRepository;
 import com.aashi.saas.repository.UserRepository;
+import com.aashi.saas.service.filter.TenantFilterService;
 
 import jakarta.persistence.EntityManager;
 import lombok.AllArgsConstructor;
 
 @Service
+@Transactional
 @AllArgsConstructor
-public class UserService {
+public class UserService extends TenantFilterService{
 
 	private UserRepository userRepository;
 
@@ -29,7 +31,6 @@ public class UserService {
 
 	private PasswordEncoder passwordEncoder;
 
-	private EntityManager entityManager;
 
 	public UserResponseDto createUser(UserRequestDto userDto) {
 		Long tenantId = TenantContext.getTenantId();
@@ -49,18 +50,16 @@ public class UserService {
 	
 
 	public UserResponseDto getUserById(Long id) {
+		enableTenantFilter();
 		User user = userRepository.findById(id).orElseThrow(() -> new RuntimeException("User not found"));
 		return new UserResponseDto(user.getId(), user.getUsername(), user.getEmail(), user.getRole());
 	}
 	
 	
 
-	@Transactional
+	
 	public List<User> getAllusers() {
-		Session session = entityManager.unwrap(Session.class);
-
-		session.enableFilter("tenantFilter").setParameter("tenantId", TenantContext.getTenantId());
-		System.out.println("Tenant ID: " + TenantContext.getTenantId());
+		enableTenantFilter();
 		return userRepository.findAll();
 	}
 
@@ -72,11 +71,11 @@ public class UserService {
 
 	
 	
-	public List<UserResponseDto> getUserByTenant() {
-		Long tenantId = TenantContext.getTenantId();
-		List<User> users = userRepository.findAll();
-		return users.stream()
-				.map(user -> new UserResponseDto(user.getId(), user.getUsername(), user.getEmail(), user.getRole()))
-				.toList();
-	}
+//	public List<UserResponseDto> getUserByTenant() {
+//		Long tenantId = TenantContext.getTenantId();
+//		List<User> users = userRepository.findAll();
+//		return users.stream()
+//				.map(user -> new UserResponseDto(user.getId(), user.getUsername(), user.getEmail(), user.getRole()))
+//				.toList();
+//	}
 }

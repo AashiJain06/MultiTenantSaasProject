@@ -10,6 +10,7 @@ import com.aashi.saas.entity.Project;
 import com.aashi.saas.entity.Tenant;
 import com.aashi.saas.repository.ProjectRepository;
 import com.aashi.saas.repository.TenantRepository;
+import com.aashi.saas.service.filter.TenantFilterService;
 
 import jakarta.persistence.EntityManager;
 import jakarta.transaction.Transactional;
@@ -19,17 +20,15 @@ import lombok.RequiredArgsConstructor;
 @Service
 @Transactional
 @RequiredArgsConstructor
-public class ProjectService {
+public class ProjectService extends TenantFilterService{
    private final ProjectRepository projectRepository;
    private final TenantRepository tenantRepository;
-   private final EntityManager entityManager;
+ 
    
    public List<Project> getAllProject()
    {
-	   Session session = entityManager.unwrap(Session.class);
-	   session.enableFilter("tenantFilter")
-	   .setParameter("tenantId",TenantContext.getTenantId());
-	   
+	  
+	   enableTenantFilter();
 	   return projectRepository.findAll();
 	}
    
