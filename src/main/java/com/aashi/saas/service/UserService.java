@@ -58,9 +58,12 @@ public class UserService extends TenantFilterService{
 	
 
 	
-	public List<User> getAllusers() {
+	public List<UserResponseDto> getAllusers() {
 		enableTenantFilter();
-		return userRepository.findAll();
+		List<User> users = userRepository.findAll();
+		return users.stream()
+				.map(user -> new UserResponseDto(user.getId(), user.getUsername(), user.getEmail(), user.getRole()))
+			.toList();
 	}
 
 	

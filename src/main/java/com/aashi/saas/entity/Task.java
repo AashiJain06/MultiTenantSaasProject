@@ -5,6 +5,8 @@ import org.hibernate.annotations.Filter;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -23,7 +25,11 @@ public class Task {
 	
 	private String title;
 	
-	private String status;
+	private String discription;
+	
+
+	@Enumerated(EnumType.STRING)
+	private TaskStatus status;
 	
 	@ManyToOne
 	@JoinColumn(name = "project_id")
@@ -54,11 +60,11 @@ public class Task {
 		this.title = title;
 	}
 
-	public String getStatus() {
+	public TaskStatus getStatus() {
 		return status;
 	}
 
-	public void setStatus(String status) {
+	public void setStatus(TaskStatus status) {
 		this.status = status;
 	}
 
@@ -84,6 +90,13 @@ public class Task {
 
 	public void setTenant(Tenant tenant) {
 		this.tenant = tenant;
+	}
+	public String getDiscription() {
+		return discription;
+	}
+
+	public void setDiscription(String discription) {
+		this.discription = discription;
 	}
 	
 

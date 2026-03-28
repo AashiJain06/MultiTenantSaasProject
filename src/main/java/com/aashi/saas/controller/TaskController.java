@@ -3,15 +3,22 @@ package com.aashi.saas.controller;
 import java.util.List;
 
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.aashi.saas.dto.CreateTaskDto;
+import com.aashi.saas.dto.ResponseTaskDto;
 import com.aashi.saas.entity.Task;
+import com.aashi.saas.entity.TaskStatus;
 import com.aashi.saas.service.TaskService;
 
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 
 @RestController
@@ -23,14 +30,27 @@ public class TaskController {
 	private final TaskService taskService;
 	
 	@GetMapping
-	public List<Task> getAll()
+	public List<ResponseTaskDto> getAll()
 	{
 		return taskService.getAlltask();
 	}
 	@PostMapping
-	public Task create(@RequestBody Task task)
+	public ResponseTaskDto create(@Valid @RequestBody CreateTaskDto taskDto)
 	{
-		return taskService.createTask(task);
+		return taskService.createTask(taskDto);
+	}
+	@GetMapping("/project/{projectId}")
+	public List<Task> getByProject(@PathVariable Long projectId) {
+	    return taskService.getTasksByProject(projectId);
+	}
+	@GetMapping("/user/{userId}")
+	public List<ResponseTaskDto> getByUser(@PathVariable Long userId) {
+	    return taskService.getTasksByUser(userId);
+	}
+	@PutMapping("/{taskId}/status")
+	public ResponseTaskDto updateStatus(@PathVariable Long taskId,
+	                         @RequestParam TaskStatus status) {
+	    return taskService.updateStatus(taskId, status);
 	}
 
 }
