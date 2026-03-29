@@ -2,6 +2,8 @@ package com.aashi.saas.controller;
 
 import java.util.List;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -23,9 +25,9 @@ public class ProjectController {
 	private final ProjectService projectService;
 	
 	@GetMapping
-	public List<Project> getAll()
+	public Page<Project> getAll(Pageable pageable)
 	{
-		return projectService.getAllProject();
+		return projectService.getAllProject(pageable);
 	}
 	
 	@PostMapping

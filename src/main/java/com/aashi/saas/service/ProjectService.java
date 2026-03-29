@@ -3,6 +3,8 @@ package com.aashi.saas.service;
 import java.util.List;
 
 import org.hibernate.Session;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import com.aashi.saas.context.TenantContext;
@@ -25,11 +27,11 @@ public class ProjectService extends TenantFilterService{
    private final TenantRepository tenantRepository;
  
    
-   public List<Project> getAllProject()
+   public Page<Project> getAllProject(Pageable pageable)
    {
 	  
 	   enableTenantFilter();
-	   return projectRepository.findAll();
+	   return projectRepository.findAll(pageable);
 	}
    
    public Project createProject(Project project)

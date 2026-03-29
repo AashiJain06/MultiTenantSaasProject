@@ -4,6 +4,8 @@ import java.util.List;
 
 import org.hibernate.Filter;
 import org.hibernate.Session;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -58,12 +60,12 @@ public class UserService extends TenantFilterService{
 	
 
 	
-	public List<UserResponseDto> getAllusers() {
+	public Page<UserResponseDto> getAllusers(Pageable pageable) {
 		enableTenantFilter();
-		List<User> users = userRepository.findAll();
-		return users.stream()
-				.map(user -> new UserResponseDto(user.getId(), user.getUsername(), user.getEmail(), user.getRole()))
-			.toList();
+		return userRepository.findAll(pageable)
+		
+				.map(user -> new UserResponseDto(user.getId(), user.getUsername(), user.getEmail(), user.getRole()));
+			
 	}
 
 	

@@ -2,6 +2,8 @@ package com.aashi.saas.controller;
 
 import java.util.List;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -13,7 +15,6 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.aashi.saas.dto.CreateTaskDto;
 import com.aashi.saas.dto.ResponseTaskDto;
-import com.aashi.saas.entity.Task;
 import com.aashi.saas.entity.TaskStatus;
 import com.aashi.saas.service.TaskService;
 
@@ -30,9 +31,10 @@ public class TaskController {
 	private final TaskService taskService;
 	
 	@GetMapping
-	public List<ResponseTaskDto> getAll()
+	public Page<ResponseTaskDto> getAll(Pageable pageable)
 	{
-		return taskService.getAlltask();
+		
+		return taskService.getAlltask(pageable);
 	}
 	@PostMapping
 	public ResponseTaskDto create(@Valid @RequestBody CreateTaskDto taskDto)
@@ -40,12 +42,12 @@ public class TaskController {
 		return taskService.createTask(taskDto);
 	}
 	@GetMapping("/project/{projectId}")
-	public List<Task> getByProject(@PathVariable Long projectId) {
-	    return taskService.getTasksByProject(projectId);
+	public Page<ResponseTaskDto> getByProject(@PathVariable Long projectId,Pageable pageable) {
+	    return taskService.getTasksByProject(projectId,pageable);
 	}
 	@GetMapping("/user/{userId}")
-	public List<ResponseTaskDto> getByUser(@PathVariable Long userId) {
-	    return taskService.getTasksByUser(userId);
+	public Page<ResponseTaskDto> getByUser(@PathVariable Long userId, Pageable pageable) {
+	    return taskService.getTasksByUser(userId,pageable);
 	}
 	@PutMapping("/{taskId}/status")
 	public ResponseTaskDto updateStatus(@PathVariable Long taskId,

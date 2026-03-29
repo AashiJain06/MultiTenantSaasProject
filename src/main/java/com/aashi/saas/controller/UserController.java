@@ -3,6 +3,8 @@ package com.aashi.saas.controller;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -35,9 +37,9 @@ public class UserController {
 	}
    @PreAuthorize("hasRole('ADMIN')")
    @GetMapping("/get")
-   public List<UserResponseDto> getAlluser()
+   public Page<UserResponseDto> getAlluser(Pageable pageable)
    {
-	   return userService.getAllusers();
+	   return userService.getAllusers(pageable);
    }
    
    @GetMapping("/{id}")
@@ -51,10 +53,4 @@ public class UserController {
        return "User deleted successfully";
    }
    
-//   @PreAuthorize("hasRole('ADMIN')")
-//   @GetMapping("/tenant")
-//   public List<UserResponseDto> getUserByTenant()
-//   {
-//	   return userService.getUserByTenant();
-//   }
 }

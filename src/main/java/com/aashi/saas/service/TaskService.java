@@ -2,6 +2,8 @@ package com.aashi.saas.service;
 
 import java.util.List;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import com.aashi.saas.context.TenantContext;
@@ -35,10 +37,13 @@ public class TaskService extends TenantFilterService{
 	private final UserRepository userRepository;
 	private final ProjectRepository projectRepository;
 	
-	public List<Task> getAlltask()
+	public Page<ResponseTaskDto> getAlltask(Pageable pageable)
 	{
 		enableTenantFilter();
-		return taskRepository.findAll();
+		return taskRepository.findAll(pageable)
+ 				.map(task -> new ResponseTaskDto(task.getId(),task.getTitle(),task.getDiscription(),task.getStatus(),task.getAssignedUser().getId(),task.getProject().getId()
+ 						));
+
 	}
 	public ResponseTaskDto createTask(CreateTaskDto taskDto) {
 		enableTenantFilter();
@@ -64,31 +69,46 @@ public class TaskService extends TenantFilterService{
             throw new RuntimeException("User and Project belong to different tenants");
         }
             Task task = new Task();
-            task.setAssigned_user(user);
+            task.setTenant(tenant);
+            task.setAssignedUser(user);
             task.setTitle(taskDto.getTitle());
             task.setProject(project);
             task.setDiscription(taskDto.getDescription());
             task.setStatus(TaskStatus.TODO);
         	task =  taskRepository.save(task);
-        	return new ResponseTaskDto(task.getId(),task.getTitle(),task.getDiscription(),task.getStatus(),task.getAssigned_user().getId(),task.getProject().getId());
+        	return new ResponseTaskDto(task.getId(),task.getTitle(),task.getDiscription(),task.getStatus(),task.getAssignedUser().getId(),task.getProject().getId());
        }
-     public List<ResponseTaskDto> getTasksByProject(Long projectId)
+     public Page<ResponseTaskDto> getTasksByProject(Long projectId,Pageable pageable)
      {
     	 enableTenantFilter();
-    	 List<Task> task =  taskRepository.findBYProjectId(projectId);
-    	 return task.stream()
- 				.map(task -> new ResponseTaskDto(task.getId(),task.getTitle(),task.getDiscription(),task.getStatus(),task.getAssigned_user().getId(),task.getProject().getId())
- 				.toList();
+    	 Project project = projectRepository.findById(projectId).orElseThrow(()-> new RuntimeException("Project Not Found"));
+    	 if(project.getTenant().getId()!=TenantContext.getTenantId())
+    	 {
+    		 throw new RuntimeException("Project does not belong to Tenant");
+    	 }
+    	 return  taskRepository.findByProjectId(projectId,pageable)
+    			 .map(task -> new ResponseTaskDto(task.getId(),task.getTitle(),task.getDiscription(),task.getStatus(),task.getAssignedUser().getId(),task.getProject().getId()
+    					   ));	 
+    	 
      }
-     public List<Task> getTasksByUser(Long userId)
+     public Page<ResponseTaskDto> getTasksByUser(Long userId,Pageable pageable)
      {
     	 enableTenantFilter();
-    	 return taskRepository.findByAssigned_user(userId);
+    	 User user = userRepository.findById(userId).orElseThrow(()-> new UserNotFoundException("User not Found"));
+    	 if(user.getTenant().getId()!=TenantContext.getTenantId())
+    	 {
+    		 throw new RuntimeException("User does not belong to Tenant");
+    	 }
+    	 return taskRepository.findByAssignedUser_Id(userId,pageable)
+   .map(task -> new ResponseTaskDto(task.getId(),task.getTitle(),task.getDiscription(),task.getStatus(),task.getAssignedUser().getId(),task.getProject().getId()
+		   ));
+  				
      }
-	 public Task updateStatus(Long taskId, TaskStatus status) {
+	 public ResponseTaskDto updateStatus(Long taskId, TaskStatus status) {
 		Task task = taskRepository.findById(taskId).orElseThrow(()->new RuntimeException("Task Not Found"));
 		task.setStatus(status);
-		return taskRepository.save(task);
+		task =  taskRepository.save(task);
+		return new ResponseTaskDto(task.getId(),task.getTitle(),task.getDiscription(),task.getStatus(),task.getAssignedUser().getId(),task.getProject().getId());
 	 }
 
 }

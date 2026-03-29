@@ -38,7 +38,7 @@ public class Task {
 	@ManyToOne
 	@JsonIgnore
 	@JoinColumn(name = "assigned_user_id")
-	private User assigned_user;
+	private User assignedUser;
 	
 	@ManyToOne
 	@JoinColumn(name="tenant_id",nullable = false)
@@ -76,12 +76,12 @@ public class Task {
 		this.project = project;
 	}
 
-	public User getAssigned_user() {
-		return assigned_user;
+	public User getAssignedUser() {
+		return assignedUser;
 	}
 
-	public void setAssigned_user(User assigned_user) {
-		this.assigned_user = assigned_user;
+	public void setAssignedUser(User assigned_user) {
+		this.assignedUser = assigned_user;
 	}
 
 	public Tenant getTenant() {
