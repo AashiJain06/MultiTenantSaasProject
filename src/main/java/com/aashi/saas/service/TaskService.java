@@ -4,6 +4,8 @@ import java.util.List;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import com.aashi.saas.context.TenantContext;
@@ -17,10 +19,12 @@ import com.aashi.saas.entity.Tenant;
 import com.aashi.saas.entity.User;
 import com.aashi.saas.exception.TenantNotFoundException;
 import com.aashi.saas.exception.UserNotFoundException;
+import com.aashi.saas.repository.AuditLogRepository;
 import com.aashi.saas.repository.ProjectRepository;
 import com.aashi.saas.repository.TaskRepository;
 import com.aashi.saas.repository.TenantRepository;
 import com.aashi.saas.repository.UserRepository;
+import com.aashi.saas.security.CustomUserDetails;
 import com.aashi.saas.service.filter.TenantFilterService;
 
 
@@ -36,6 +40,7 @@ public class TaskService extends TenantFilterService{
 	private final TaskRepository taskRepository;
 	private final UserRepository userRepository;
 	private final ProjectRepository projectRepository;
+	private final AuditLogService auditLogService;
 	
 	public Page<ResponseTaskDto> getAlltask(Pageable pageable)
 	{
@@ -76,6 +81,12 @@ public class TaskService extends TenantFilterService{
             task.setDiscription(taskDto.getDescription());
             task.setStatus(TaskStatus.TODO);
         	task =  taskRepository.save(task);
+        	Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+
+        	CustomUserDetails userDetails = (CustomUserDetails) auth.getPrincipal();
+
+        	String username = userDetails.getUsername();
+        	auditLogService.logAction("Create Task", username, "TASK", task.getId());
         	return new ResponseTaskDto(task.getId(),task.getTitle(),task.getDiscription(),task.getStatus(),task.getAssignedUser().getId(),task.getProject().getId());
        }
      public Page<ResponseTaskDto> getTasksByProject(Long projectId,Pageable pageable)
@@ -108,6 +119,13 @@ public class TaskService extends TenantFilterService{
 		Task task = taskRepository.findById(taskId).orElseThrow(()->new RuntimeException("Task Not Found"));
 		task.setStatus(status);
 		task =  taskRepository.save(task);
+		
+		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+
+    	CustomUserDetails userDetails = (CustomUserDetails) auth.getPrincipal();
+
+    	String username = userDetails.getUsername();
+    	auditLogService.logAction("Update Task Status", username, "TASK", task.getId());
 		return new ResponseTaskDto(task.getId(),task.getTitle(),task.getDiscription(),task.getStatus(),task.getAssignedUser().getId(),task.getProject().getId());
 	 }
 
