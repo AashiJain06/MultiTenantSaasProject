@@ -1,4 +1,4 @@
-# 🚀 Multi-Tenant SaaS Platform (Spring Boot)
+# 🚀 Multi-Tenant SaaS Platform[Backend] (Spring Boot)
 
 > 💡 A production-ready backend system simulating how real SaaS platforms like Slack, Jira, or Notion isolate and manage multiple organizations securely.
 ---
