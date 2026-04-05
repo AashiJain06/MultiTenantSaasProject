@@ -2,6 +2,7 @@ package com.aashi.saas.controller;
 
 import java.util.List;
 
+import org.springdoc.core.annotations.ParameterObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -37,7 +38,7 @@ public class UserController {
 	}
    @PreAuthorize("hasRole('ADMIN')")
    @GetMapping("/get")
-   public Page<UserResponseDto> getAlluser(Pageable pageable)
+   public Page<UserResponseDto> getAlluser(@ParameterObject Pageable pageable)
    {
 	   return userService.getAllusers(pageable);
    }

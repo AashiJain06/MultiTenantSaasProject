@@ -2,8 +2,10 @@ package com.aashi.saas.controller;
 
 import java.util.List;
 
+import org.springdoc.core.annotations.ParameterObject;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -23,14 +25,17 @@ import lombok.RequiredArgsConstructor;
 public class ProjectController {
 	
 	private final ProjectService projectService;
+
 	
 	@GetMapping
-	public Page<Project> getAll(Pageable pageable)
+	@PreAuthorize("hasRole('ADMIN')")
+	public Page<Project> getAll(@ParameterObject Pageable pageable)
 	{
 		return projectService.getAllProject(pageable);
 	}
 	
 	@PostMapping
+	@PreAuthorize("hasRole('ADMIN')")
 	public Project createProject(@RequestBody Project project)
 	{
 		return projectService.createProject(project);

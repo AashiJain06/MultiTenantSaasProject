@@ -15,9 +15,12 @@ import com.aashi.saas.dto.UserRequestDto;
 import com.aashi.saas.dto.UserResponseDto;
 import com.aashi.saas.entity.Tenant;
 import com.aashi.saas.entity.User;
+import com.aashi.saas.exception.UserNotFoundException;
 import com.aashi.saas.repository.TenantRepository;
 import com.aashi.saas.repository.UserRepository;
+import com.aashi.saas.security.CustomUserDetails;
 import com.aashi.saas.service.filter.TenantFilterService;
+import com.aashi.saas.utility.UtilityClass;
 
 import jakarta.persistence.EntityManager;
 import lombok.AllArgsConstructor;
@@ -32,6 +35,8 @@ public class UserService extends TenantFilterService{
 	private TenantRepository tenantRepository;
 
 	private PasswordEncoder passwordEncoder;
+	
+	private AuditLogService auditLogService;
 
 
 	public UserResponseDto createUser(UserRequestDto userDto) {
@@ -45,6 +50,10 @@ public class UserService extends TenantFilterService{
 		user.setEmail(userDto.getEmail());
 		user.setPassword(passwordEncoder.encode(userDto.getPassword()));
 		User savedUser = userRepository.save(user);
+		
+		CustomUserDetails currentUser = UtilityClass.getCurrentUser();
+	    String username = currentUser.getUsername();
+    	auditLogService.logAction("Create User", username, "User", user.getId());
 		return new UserResponseDto(savedUser.getId(), savedUser.getUsername(), savedUser.getEmail(),
 				savedUser.getRole());
 	}
@@ -71,7 +80,12 @@ public class UserService extends TenantFilterService{
 	
 	
 	public void deleteUser(Long id) {
+		User user = userRepository.findById(id).orElseThrow(()-> new UserNotFoundException("User not found"));
 		userRepository.deleteById(id);
+		CustomUserDetails currentUser = UtilityClass.getCurrentUser();
+	    String username = currentUser.getUsername();
+    	auditLogService.logAction("Delete User", username, "User", user.getId());
+
 	}
 
 	

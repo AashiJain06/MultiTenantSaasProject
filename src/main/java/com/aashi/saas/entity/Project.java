@@ -24,6 +24,18 @@ public class Project {
   @ManyToOne
   @JoinColumn(name = "tenant_id",nullable = false)
   private Tenant tenant;
+  
+  @ManyToOne
+  @JoinColumn(name="admin_id",nullable = false)
+  private User admin;
+
+  public User getAdmin() {
+	return admin;
+}
+
+  public void setAdmin(User admin) {
+	this.admin = admin;
+  }
 
   public Long getId() {
 	return id;
