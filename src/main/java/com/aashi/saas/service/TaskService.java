@@ -40,6 +40,7 @@ public class TaskService extends TenantFilterService{
 	private final UserRepository userRepository;
 	private final ProjectRepository projectRepository;
 	private final AuditLogService auditLogService;
+	private final AIService aiService;
 	
 	public Page<ResponseTaskDto> getAllTaskOfProject(Long projectId,Pageable pageable)
 	{
@@ -148,6 +149,7 @@ public class TaskService extends TenantFilterService{
 		            .map(task -> new ResponseTaskDto(task.getId(),task.getTitle(),task.getDiscription(),task.getStatus(),task.getAssignedUser().getId(),task.getProject().getId()
 		         		   ));
 		}
+	 
 	 public Page<ResponseTaskDto> getTaskByStatus(Long projectId , TaskStatus status, Pageable pageable)
 	 {
 		 enableTenantFilter();
@@ -167,5 +169,47 @@ public class TaskService extends TenantFilterService{
 	 }
 		}
 	 
+	 public String getAiTaskSummary() {
 
+		    enableTenantFilter();
+
+		    CustomUserDetails currentUser = UtilityClass.getCurrentUser();
+
+		    List<Task> tasks = taskRepository.findByAssignedUserId(currentUser.getUserId());
+
+		    if (tasks.isEmpty()) {
+		        return "No tasks assigned to you";
+		    }
+
+		    String prompt = buildPrompt(tasks);
+
+		    return aiService.getAiSummary(prompt);
+		}
+	 
+	 private String buildPrompt(List<Task> tasks) {
+
+	        StringBuilder sb = new StringBuilder();
+
+	        sb.append("""
+	        Summarize the following tasks.
+	        Also include:
+	        - total tasks
+	        - completed tasks
+	        - pending tasks
+	        - suggest priority work
+
+	        Tasks:
+	        """);
+
+	        for (Task task : tasks) {
+	            sb.append("- ")
+	              .append(task.getTitle())
+	              .append(" (Status: ")
+	              .append(task.getStatus())
+	              .append(")\n");
+	        }
+			return sb.toString();
+	 
+
+  }
 }

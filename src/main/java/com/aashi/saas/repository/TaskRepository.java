@@ -2,6 +2,8 @@ package com.aashi.saas.repository;
 
 
 
+import java.util.List;
+
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -18,11 +20,15 @@ public interface TaskRepository extends JpaRepository<Task, Long>{
 	
 	Page<Task> findByProjectIdAndStatus(Long projectId , TaskStatus status, Pageable pageable);
 	
+	
+	
 	long countByStatus(TaskStatus status);
 	
 	long countByProjectId(Long projectId);
 	
 	long countByProjectIdAndStatus(Long projectID, TaskStatus status);
+
+	List<Task> findByAssignedUserId(Long userId);
 	
 
 }

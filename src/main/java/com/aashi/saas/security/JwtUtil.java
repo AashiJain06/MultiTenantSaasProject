@@ -3,7 +3,6 @@ package com.aashi.saas.security;
 import java.security.Key;
 import java.util.Date;
 
-import javax.crypto.SecretKey;
 
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;

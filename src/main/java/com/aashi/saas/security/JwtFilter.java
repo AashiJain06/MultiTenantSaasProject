@@ -49,15 +49,19 @@ public class JwtFilter extends OncePerRequestFilter{
 			{
 				String username = JwtUtil.extractUsername(token);
 				System.out.println("Username:"+username);
+				
 				Long tenantId = JwtUtil.extractTenantId(token);
 				System.out.println("TenantId :"+tenantId);
+				
 				var userDetails = userDetailService.loadUserByUsername(username);
 				System.out.println("User is loaded sucessfully");
+				
 				var auth = new UsernamePasswordAuthenticationToken(userDetails,null,userDetails.getAuthorities());
 				System.out.println("User is Authenticate");
 				
 				SecurityContextHolder.getContext().setAuthentication(auth);
 				System.out.println("User is authorised");
+				
 				TenantContext.setTenantId(tenantId);
 				System.out.println("TenantId set Sucessfully");
 			}
