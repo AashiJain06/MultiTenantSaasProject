@@ -16,7 +16,7 @@ public class AIService {
 
     public String getAiSummary(String prompt) {
         return chatClient.prompt()
-                .user("Say hi in spanish")
+                .user(prompt)
                 .call()
                 .content();
     }

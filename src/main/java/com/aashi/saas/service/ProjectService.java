@@ -10,6 +10,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import com.aashi.saas.context.TenantContext;
+import com.aashi.saas.dto.ProjectRequestDto;
 import com.aashi.saas.entity.Project;
 import com.aashi.saas.entity.Tenant;
 import com.aashi.saas.entity.User;
@@ -41,14 +42,19 @@ public class ProjectService extends TenantFilterService{
 	   return projectRepository.findAll(pageable);
 	}
    
-   public Project createProject(Project project)
+   public Project createProject(ProjectRequestDto projectDto)
    {
-	   Long tenantId = TenantContext.getTenantId();
+	   Long tenantId = TenantContext.getTenantId(); 
 	   Tenant tenant = tenantRepository.findById(tenantId).orElseThrow(()-> new RuntimeException("Tenant not Found"));
-	   User user = userRepository.findById(tenantId).orElseThrow(()-> new RuntimeException("User Not Found"));
+	   CustomUserDetails currentUser = UtilityClass.getCurrentUser();
+	   Long userId = currentUser.getUserId();
+	   User user = userRepository.findById(userId).orElseThrow(()-> new RuntimeException("User Not Found"));
+       Project project = new Project();
+       project.setName(projectDto.getName());
+       project.setDescription(projectDto.getDescription());
        project.setTenant(tenant);
        project.setAdmin(user);
-	   project =  projectRepository.save(project);
+	    projectRepository.save(project);
 
    	String username = UtilityClass.getCurrentUser().getUsername();
    	auditLogService.logAction("Create Project", username, "PROJECT", project.getId());

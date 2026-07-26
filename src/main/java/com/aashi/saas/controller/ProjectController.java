@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.aashi.saas.dto.ProjectRequestDto;
 import com.aashi.saas.entity.Project;
 import com.aashi.saas.service.ProjectService;
 
@@ -36,7 +37,7 @@ public class ProjectController {
 	
 	@PostMapping
 	@PreAuthorize("hasRole('ADMIN')")
-	public Project createProject(@RequestBody Project project)
+	public Project createProject(@RequestBody ProjectRequestDto project)
 	{
 		return projectService.createProject(project);
 	}
