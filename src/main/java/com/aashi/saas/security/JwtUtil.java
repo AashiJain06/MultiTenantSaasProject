@@ -3,6 +3,7 @@ package com.aashi.saas.security;
 import java.security.Key;
 import java.util.Date;
 
+import javax.crypto.SecretKey;
 
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
@@ -10,24 +11,25 @@ import io.jsonwebtoken.security.Keys;
 
 public class JwtUtil {
 	private static final String SECRET = "mysecretkeysecretkeymykeysecret123";
-	private static final Key key = Keys.hmacShaKeyFor(SECRET.getBytes());
+	private static final SecretKey key = Keys.hmacShaKeyFor(SECRET.getBytes());
 	
-	public static String generateToken(String username , Long tenantId)
-	{
-		return Jwts.builder()
-				.subject(username)
-				.claim("tenantId", tenantId)
-				.issuedAt(new Date(System.currentTimeMillis()+1000*60*60))
-				.signWith(key)
-				.compact();
+	public static String generateToken(String username, Long tenantId) {
+
+	    return Jwts.builder()
+	            .subject(username)
+	            .claim("tenantId", tenantId)
+	            .issuedAt(new Date())   // Current time
+	            .expiration(new Date(System.currentTimeMillis() + 900000)) // 15 min
+	            .signWith(key)
+	            .compact();
 	}
 	public static Claims extractClaims(String token) {
-		return Jwts.parser()
-		        .setSigningKey(key)
-		        .build()
-		        .parseClaimsJws(token)
-		        .getBody();
-    }
+	    return Jwts.parser()
+	            .verifyWith(key)
+	            .build()
+	            .parseSignedClaims(token)
+	            .getPayload();
+	}
 	public static String extractUsername(String token)
 	{
 		return extractClaims(token).getSubject();

@@ -34,11 +34,11 @@ public class JwtFilter extends OncePerRequestFilter{
 		    return;
 		}
 		System.out.println("Jwt Filter called");
-		Enumeration<String> headers = request.getHeaderNames();
-		while(headers.hasMoreElements()) {
-		    String name = headers.nextElement();
-		    System.out.println(name + " = " + request.getHeader(name));
-		}
+//		Enumeration<String> headers = request.getHeaderNames();
+//		while(headers.hasMoreElements()) {
+//		    String name = headers.nextElement();
+//		    System.out.println(name + " = " + request.getHeader(name));
+//		}
 		String header = request.getHeader("Authorization");
 		System.out.println("Header: "+header);
 		if(header!=null && header.startsWith("Bearer "))

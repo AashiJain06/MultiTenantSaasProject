@@ -12,7 +12,7 @@ public class UtilityClass {
 
     	CustomUserDetails userDetails = (CustomUserDetails) auth.getPrincipal();
        return userDetails;
-    	
+    
 	}
 
 }
