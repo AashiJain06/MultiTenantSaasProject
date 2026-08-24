@@ -11,7 +11,7 @@ import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 
 @Entity
-@Table(name = " projects")
+@Table(name = "projects")
 @Filter(name="tenantFilter" , condition = "tenant_id= :tenantId")
 public class Project {
 	@Id

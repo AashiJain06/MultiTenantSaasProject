@@ -23,6 +23,9 @@ public class CustomUserDetails implements UserDetails{
 	}
 	public Long getTenantId()
 	{
+		if(user.getTenant() == null) {
+			return null; // or throw an exception, depending on your use case
+		}
 		return user.getTenant().getId();
 	}
 	public Long getUserId()

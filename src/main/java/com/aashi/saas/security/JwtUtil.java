@@ -11,7 +11,8 @@ import io.jsonwebtoken.security.Keys;
 
 public class JwtUtil {
 	private static final String SECRET = "mysecretkeysecretkeymykeysecret123";
-	private static final SecretKey key = Keys.hmacShaKeyFor(SECRET.getBytes());
+	private static final SecretKey
+	key = Keys.hmacShaKeyFor(SECRET.getBytes());
 	
 	public static String generateToken(String username, Long tenantId) {
 

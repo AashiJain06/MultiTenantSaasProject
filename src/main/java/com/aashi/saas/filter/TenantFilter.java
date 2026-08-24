@@ -35,7 +35,7 @@ public class TenantFilter extends OncePerRequestFilter{
 		   var auth = SecurityContextHolder.getContext().getAuthentication();
 		   if(auth!=null && auth.getPrincipal() instanceof CustomUserDetails user)
 		   {
-			  TenantContext.setTenantId((long)user.getTenantId()); 
+			  TenantContext.setTenantId(user.getTenantId()); 
 			  
 //		      Session session = entityManager.unwrap(Session.class);
 //		     Filter filter = session.enableFilter("tenantFilter");
