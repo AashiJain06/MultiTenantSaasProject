@@ -61,7 +61,7 @@ public class AuthController {
 	    String accessToken = JwtUtil.generateToken(token.getUser().getUsername(),
                 token.getUser().getTenant().getId());
 
-	    return accessToken;
+	    return "new access token :" + accessToken;
 	}
 	
 	@PostMapping("/logout")

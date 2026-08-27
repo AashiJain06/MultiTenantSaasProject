@@ -35,6 +35,19 @@ public class GlobalExceptionHandler {
 		ErrorResponse error = new ErrorResponse(HttpStatus.FOUND.value(), ex.getMessage());
 		return new ResponseEntity<>(error , HttpStatus.FOUND);
 	}
+	
+	@ExceptionHandler(ProjectMemberNotFoundException.class)
+	public ResponseEntity<ErrorResponse> handleProjectMemberNotFound(ProjectMemberNotFoundException ex)
+	{
+		ErrorResponse error = new ErrorResponse(HttpStatus.FOUND.value(), ex.getMessage());
+		return new ResponseEntity<>(error , HttpStatus.FOUND);
+	}
+	@ExceptionHandler(ProjectMemberAlreadyExistsException.class)
+	public ResponseEntity<ErrorResponse> handleProjectMemberAlreadyExists(ProjectMemberAlreadyExistsException ex)
+	{
+		ErrorResponse error = new ErrorResponse(HttpStatus.FOUND.value(), ex.getMessage());
+		return new ResponseEntity<>(error , HttpStatus.FOUND);
+	}
 	@ExceptionHandler(AccessDeniedException.class)
 	public ResponseEntity<ErrorResponse> handleAccessDenied(AccessDeniedException ex)
 	{

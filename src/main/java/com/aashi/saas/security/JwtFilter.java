@@ -26,7 +26,8 @@ public class JwtFilter extends OncePerRequestFilter{
 
 		if (path.contains("/api/auth") ||
 		    path.contains("/swagger-ui") ||
-		    path.contains("/v3/api-docs")) {
+		    path.contains("/v3/api-docs") || 
+		    path.contains("/swagger-ui")) {
 
 		    System.out.println("Skipping JWT filter for: " + path);
 		    filterChain.doFilter(request, response);
